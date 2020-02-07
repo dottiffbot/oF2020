@@ -8,4 +8,5 @@
 ## Description
 > this program has a bunch of cool 3D primitives, which spin!
 ## Screenshots
+![3D Primitive Example](assets/assignment_2.png)
 ![3D Primitive Example](assets/assignment_2.gif)
