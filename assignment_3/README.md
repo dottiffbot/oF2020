@@ -37,5 +37,5 @@ Right now, I can see some of interactions a of a user being drawing paths with t
 
 ### Assignment 3 Documentation
 ![phoneframe1](assets/phone_face)
-![phoneframe2] (assets/phone_face2)
+![phoneframe2](assets/phone_face2)
 
