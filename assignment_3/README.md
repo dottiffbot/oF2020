@@ -34,3 +34,8 @@ The goal of this project would be to start building multiple internets, where pe
 <br>
 
 Right now, I can see some of interactions a of a user being drawing paths with their mouse to connect computers / users with other users across the globe, creating a web of different online identities. 
+
+### Assignment 3 Documentation
+![phoneframe1](assets/phone_face)
+![phoneframe2] (assets/phone_face2)
+
