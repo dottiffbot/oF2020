@@ -1,4 +1,4 @@
 # About
 
-![Screenshot of meshtest](1.png)
+![Screenshot of meshtest](screen/1.png)
 
