@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<group>
+	<draw_faces>1</draw_faces>
+	<draw_wires>1</draw_wires>
+	<noise_scale>0.00714286, 0</noise_scale>
+	<frequency>0.5</frequency>
+	<amplitude>24</amplitude>
+	<color_near>121, 255, 154, 255</color_near>
+	<color_far>0, 0, 128, 255</color_far>
+</group>
