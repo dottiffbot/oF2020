@@ -9,9 +9,14 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 
+
+		void SetRelativePositions();
 		void drawBearhead();
 		void drawBearbody();
 		void happy();
+		void drawScene1();
+		void drawScene2();
+		void drawScene3();
 		
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -28,7 +33,9 @@ class ofApp : public ofBaseApp{
 		ofSoundPlayer soundPlayer;
 		ofxFloatSlider soundVolume;
 		ofTrueTypeFont blocus;
-		ofImage image;
+		ofImage cloud;
+		ofImage fire;
+		ofImage honey;
 
 		ofxPanel gui;
 };
