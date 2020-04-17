@@ -433,7 +433,7 @@ void ofApp:: boomFace(){
   mouthSizeInterpolate = mouthSizeInterpolate < 1.0 ? mouthSizeInterpolate : 1.0;
    float mouthSize = ofLerp(0.0, 60.0, mouthSizeInterpolate);
 
-   eyeSizeInterpolate +=0.05;
+   eyeSizeInterpolate +=0.0050;
    eyeSizeInterpolate = eyeSizeInterpolate < 1.0 ? eyeSizeInterpolate : 1.0;
    float eyeSize = ofLerp(0.0, 20.0, eyeSizeInterpolate);
   
