@@ -14,6 +14,7 @@ class ofApp : public ofBaseApp{
 		void drawBearhead();
 		void drawBearbody();
 		void happy();
+		void boomFace();
 		void drawScene1();
 		void drawScene2();
 		void drawScene3();
@@ -36,6 +37,10 @@ class ofApp : public ofBaseApp{
 		ofImage cloud;
 		ofImage fire;
 		ofImage honey;
+		ofImage music;
+		ofImage flip;
+		ofImage flame;
+		ofImage mush;
 
 		ofxPanel gui;
 };

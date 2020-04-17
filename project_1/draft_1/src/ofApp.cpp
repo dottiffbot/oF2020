@@ -14,6 +14,7 @@ ofColor cyan(28,187,255);
 ofColor lavender(133,103,131);
 ofColor orange(255,94,0);
 ofColor redish(255, 90, 60);
+ofColor pukegreen(186,255,25);
 
 ofVec2f headPos, headSize;
 ofVec2f nose, noseSize;
@@ -33,38 +34,45 @@ ofPolyline polyMouth;
 ofPoint p1Mouth, p2Mouth, p3Mouth;
 
 int slideNumber = 0;
-// float currentTime = 0;
 
 ofPolyline polyline;
+
+// step value for bear movement
+float step = -12;
+float mouthSizeInterpolate = 0.0;
+float eyeSizeInterpolate = 0.0;
+float browPosInterpolate =0.0;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
 
     ofSetFrameRate(60);
 	ofSetCircleResolution(100);
-	ofBackground(186,255,25);
+	ofBackground(orange);
 	ofEnableSmoothing();
 	ofSetRectMode(OF_RECTMODE_CENTER);
 
-	soundPlayer.load("picture.mp3");
+	soundPlayer.load("sleepwalk.mp3");
 	soundPlayer.play();
 
 	cloud.load("cloud.jpeg");
 	fire.load("fire.jpeg");
 	honey.load("honey.png");
+	music.load("musicnote.png");
+	flip.load("flip.png");
+	flame.load("flame.png");
+	mush.load("mushhouse.jpeg");
+
 	blocus.load("blocuswebfont.ttf", 42);
+	
 
 	// head / body
 
 	headPos.set(500,375);
 	headSize.set(250,200);
 
-
 	torsoPos.set(500, 575);
 	torsoSize.set(200,250);
-
-
-	// brows will happen possibly
 
 
 	gui.setup();
@@ -104,11 +112,9 @@ void ofApp::SetRelativePositions(){
 	p1brow.set(headPos.x - 65 , headPos.y - 58);
 	p2brow.set(headPos.x + 56, headPos.y - 58);
 
-	//happy
-
 	p1Mouth.set(nose.x, nose.y + 55);
-    p2Mouth.set(510,455);
-    p3Mouth.set(510,430);
+    p2Mouth.set(p1Mouth.x,p1Mouth.y + 50);
+    p3Mouth.set(p1Mouth.x,p1Mouth.y + 25);
 
 
  }
@@ -123,16 +129,15 @@ void ofApp::update(){
   if (ofGetFrameNum() % 7 == 0)
     rZ++;
 
-
-
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofSoundSetVolume(soundVolume);
+
+ofSoundSetVolume(soundVolume);
 
 int seconds = ofGetFrameNum()/60;
-int fakeSeconds = seconds%7;
+int fakeSeconds = seconds%16;
 
 if(fakeSeconds < 4){
 	slideNumber = 0;
@@ -163,32 +168,44 @@ else if (fakeSeconds < 16){
 //--------------------------------------------------------------
 void ofApp:: drawScene1(){
 
-   int mouthSize = 7;
-   float mouthYValue = ofLerp(7, 35, 0.5);
+mush.draw(ofGetHeight()/2, ofGetWidth()/2);
+
+   headPos.y = 375;
+   mouthSizeInterpolate = 0.0;
+   eyeSizeInterpolate  = 0.0;
+   float mouthSize1 = 7;
 
 	ofPushStyle();
+
 	drawBearbody();
+
 	ofPopStyle();
 
 	ofPushStyle();
+
 	drawBearhead();
+
 	ofPopStyle();
 
 	SetRelativePositions();
 
 	ofPushStyle();
-	ofSetColor(blue);
+
+    ofColor yellow = ofColor::yellow;
+	ofSetColor(yellow);
 	ofFill();
-	// lerp mouth from neutral to, uh wider? 
-	ofDrawEllipse(neutralMouth.x, neutralMouth.y, mouthSize, mouthYValue);
+	ofDrawEllipse(neutralMouth.x, neutralMouth.y, mouthSize1, mouthSize1);
+	
 	ofPopStyle();
 
+
 	ofPushStyle();
+
 	ofFill();
 	ofSetColor(cyan);
 	ofFill();
-	
-	blocus.drawString("hello, this is bear", 400, 200);
+	blocus.drawString("hello, this is bear...", 400, 200);
+
 	ofPopStyle();
 	ofNoFill();
 
@@ -197,6 +214,15 @@ void ofApp:: drawScene1(){
 
 //--------------------------------------------------------------
 void ofApp:: drawScene2(){
+
+	// reset our mouth size interpolation,
+	// for the next time we play our scene
+
+	mouthSizeInterpolate = 0.0;
+	 eyeSizeInterpolate  = 0.0;
+
+	headPos.y = 375;
+
 
     cloud.draw(ofGetWidth()/2, ofGetHeight()/2);
 
@@ -236,7 +262,6 @@ ofPushMatrix();
 //--------------------------------------------------------------
 void ofApp:: drawScene3(){
 
- float step = -5;
  int y = 376;
 
 
@@ -256,22 +281,17 @@ void ofApp:: drawScene3(){
 
 ofPushMatrix();
 
-   //  if(headPos.y > ofGetHeight()){
-   // 	headPos.y += step * 0 + 1;
-   // } else if (headPos.y < ofGetHeight()){
-   // 	headPos.y -= step;
-
-headPos.y = headPos.y + 1 * step;
-
-cout << "headposition " << headPos.y << endl;
- if (headPos.y < 0) {
-   step = 5;
-}
-	
-
+	headPos.y = headPos.y + 1 * step;
+	//cout << "headposition " << headPos.y << endl;
+	if (headPos.y < 0) {
+		step = 12;
+	} else if (headPos.y > (y + 1)) {
+		step = -12;
+	}
 
 	SetRelativePositions();
 	drawBearhead();
+	boomFace();
 
 	ofPopMatrix();
 
@@ -285,6 +305,9 @@ void ofApp:: drawBearhead(){
 
    int eyeSize = 10;
    int earSize = 40;
+   float widthBrow = 30;
+   float heightBrow = 10;
+   float radiusBrow = 5;
 
     ofSetColor(violet);
     ofFill();
@@ -299,25 +322,12 @@ void ofApp:: drawBearhead(){
 
 	ofSetColor(lavender);
 	ofFill();
-	ofDrawRectRounded(p1brow,30,10,5);
-    ofDrawRectRounded(p2brow,30,10,5);
+	ofDrawRectRounded(p1brow, widthBrow,heightBrow,radiusBrow);
+    ofDrawRectRounded(p2brow,widthBrow,heightBrow,radiusBrow);
 
 	ofSetColor(teal);
 	ofDrawCircle(leftEyePos,eyeSize);
 	ofDrawCircle(rightEyePos,eyeSize);
-
-
-
-
-
-	// to transition from one thing to another
-	// neutral mouth
-	// ofDrawEllipse(100, 100, 40, 50);
-	// excited mouth
-	// ofDrawEllipse(100, 100, 40, 250);
-
-	// float mouthYValue = ofLerp(50, 250, 0.5);
-	// ofDrawEllipse(neutralMouth.x, neutralMouth.y, mouthSize, mouthYValue);
 }
 
 
@@ -325,6 +335,8 @@ void ofApp:: drawBearhead(){
 void ofApp:: drawBearbody(){
 
 	int footSize = 45;
+
+	ofPushStyle();
 
 	ofSetColor(violet);
 	ofFill();
@@ -339,22 +351,60 @@ void ofApp:: drawBearbody(){
 	ofDrawEllipse(leftArmPos, armSize.x, armSize.y);
 	ofDrawEllipse(rightArmPos, armSize.x, armSize.y);
 
-	// ofPushMatrix();
-	//  ofTranslate(leftArmPos.x, leftArmPos.y, 0);
-	//  ofRotateZ(22.49);
-	//  ofDrawEllipse(0,0,armSize.x, armSize.y);
-	//  ofPopMatrix();
 
 	ofDrawCircle(leftFootPos,footSize);
 	ofDrawCircle(rightFootPos,footSize);
+
+	ofPopStyle();
+
+	// ofPushMatrix();
+
+
+ //  ofRotateX(rX);
+ //  ofRotateY(rY);
+
+	//  ofTranslate(leftArmPos.x, leftArmPos.y, 0);
+	
+	//  music.draw(0,0,armSize.x, armSize.y);
+	//  ofPopMatrix();
+
+
+	//  ofPopMatrix();
+
+  ofPushMatrix();
+
+  ofTranslate(rightArmPos.x, rightArmPos.y, 0);
+
+  ofRotateX(rX);
+  ofRotate(rZ);
+
+  flip.draw(0,0,armSize.x, armSize.y);
+
+  ofPopMatrix();
+
+  ofPushMatrix();
+
+  ofTranslate(rightArmPos.x, rightArmPos.y, 0);
+  ofRotateX(rX);
+  ofRotateY(rY);
+  music.draw(0,0, armSize.x, armSize.y);
+
+  ofPopMatrix();
+
 
 
 }
 //--------------------------------------------------------------
 void ofApp:: happy (){
 
-	ofColor yellow = ofColor::yellow;
-	ofSetColor(yellow);
+   float widthBrow = 45;
+   float heightBrow = 20;
+   float radiusBrow = 20;
+
+   ofPushStyle();
+
+   ofColor yellow = ofColor::yellow;
+   ofSetColor(yellow);
 
 	ofFill();
 	ofSetLineWidth(6);
@@ -362,8 +412,101 @@ void ofApp:: happy (){
 	polyMouth.arc(p1Mouth,50,50,0,180);
 	polyMouth.draw();
 
+	ofPopStyle();
+
+	ofPushStyle();
+
+	ofSetColor(lavender);
+
+	ofFill();
+
+ofDrawRectRounded(p1brow -5, widthBrow,heightBrow,radiusBrow);
+ofDrawRectRounded(p2brow,widthBrow,heightBrow,radiusBrow);
+
+ofPopStyle();
+
 }
 
+void ofApp:: boomFace(){
+
+  mouthSizeInterpolate += 0.0044;
+  mouthSizeInterpolate = mouthSizeInterpolate < 1.0 ? mouthSizeInterpolate : 1.0;
+   float mouthSize = ofLerp(0.0, 60.0, mouthSizeInterpolate);
+
+   eyeSizeInterpolate +=0.05;
+   eyeSizeInterpolate = eyeSizeInterpolate < 1.0 ? eyeSizeInterpolate : 1.0;
+   float eyeSize = ofLerp(0.0, 20.0, eyeSizeInterpolate);
+  
+   float widthBrow = 45;
+   float heightBrow = 20;
+   float radiusBrow = 20;
+
+// browPosInterpolate += 0.0044;
+// browPosInterpolate = heightBrow
+//    float browPos = ofLerp(0.0, 5.0, browPosInterpolate);
+
+
+ ofPushStyle();
+
+ ofColor yellow = ofColor::yellow;
+  ofSetColor(yellow);
+   ofFill();
+
+	// ofSetLineWidth(6);
+	// polyMouth.arc(p1Mouth,-50,-50,0,-180);
+	// polyMouth.draw();
+
+	ofDrawEllipse(neutralMouth.x, neutralMouth.y, mouthSize, mouthSize);
+
+	ofPopStyle();
+
+
+	ofPushStyle();
+	ofSetColor(lavender);
+	ofFill();
+
+
+ofDrawRectRounded(p1brow,widthBrow,heightBrow + 5,radiusBrow);
+ofDrawRectRounded(p2brow,widthBrow,heightBrow + 5,radiusBrow);
+	ofPopStyle();
+
+	ofPushStyle();
+
+    ofSetColor(teal);
+	ofDrawCircle(leftEyePos,eyeSize);
+	ofDrawCircle(rightEyePos,eyeSize);
+   
+    ofPopStyle();
+
+
+ofPopStyle();
+ofPushMatrix(); 
+
+   ofRotateX(rX);
+
+ofTranslate(leftArmPos.x, leftArmPos.y, 0);
+flame.draw(0,0,armSize.x, armSize.y);
+
+ ofPopMatrix();
+
+
+
+ ofPushMatrix();
+
+   ofRotateX(rX);
+ ofRotateY(rY);
+ ofTranslate(rightArmPos.x, rightArmPos.y, 0);
+ ofScale(0.2,0.2,0.2);
+ flame.draw(0,0,0);
+
+ ofPopMatrix();
+
+   ofNoFill();
+ofPopStyle();
+
+
+
+}
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
